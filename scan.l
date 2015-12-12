@@ -1,38 +1,33 @@
 %{
 	#include <stdio.h>	
-	int pick_col;
-	int col = 1;
-	char buf[5];
+	int liczba;
 
-struct stack
-{
-    int stk[100];
-    int top;
-};
-typedef struct stack STACK;
-STACK s;
-s.top = -1;
- 
-void push(void);
-int  pop(void);
-void display(void);
-
-void push(void);
-int  pop(void);
-void display(void);
- 
+	#define MAXSIZE 100
+	struct stack
+	{
+	    int stk[MAXSIZE];
+	    int top;
+	};
+	typedef struct stack STACK;
+	STACK s;
+	 
+	void push(int);
+	int  pop(void);
+	void display(void);
 %}
-%s KOL
 %%
-<INITIAL>^\ *[0-9]+\ *		{ sscanf(yytext, "%d", &pick_col); BEGIN KOL; }
-<KOL>.{5}\ 			{ sscanf(yytext, "%s", buf); if (col == pick_col) printf("%s\n", buf);  col++; }
-\n					{ col = 1; }
+[0-9]+	{ sscanf(yytext, "%d", &liczba); push(liczba);}
+\+		{ push(pop()+pop()); }
+\-		{ push(pop()-pop()); }			
+\*		{ push(pop()*pop()); }			
+\/		{ push(pop()/pop()); }			
+\n  	{ printf("%d\n", pop()); }
+\ 		;
 %%
 int yywrap() { return 1; }
 int main() { return yylex(); }
 void push (int num)
 {
-    int num;
     if (s.top == (MAXSIZE - 1))
     {
         return;
