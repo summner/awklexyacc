@@ -1,54 +1,23 @@
 %{
 	#include <stdio.h>	
-	int liczba;
-
-	#define MAXSIZE 100
-	struct stack
-	{
-	    int stk[MAXSIZE];
-	    int top;
-	};
-	typedef struct stack STACK;
-	STACK s;
-	 
-	void push(int);
-	int  pop(void);
+	int ileZer = 0;
+	int ileJedyn = 0 ;
 %}
+%s ONES
+%s ZEROS
+%s END
 %%
-[0-9]+	{ sscanf(yytext, "%d", &liczba); push(liczba);}
-\+		{ push(pop()+pop()); }
-\-		{ push(pop()-pop()); }			
-\*		{ push(pop()*pop()); }			
-\/		{ push(pop()/pop()); }			
-\n  	{ printf("%d\n", pop()); }
-\ 		;
+<INITIAL>^\n	{ printf(" OK\n"); }
+<INITIAL>^0	{ ileJedyn=0; ileZer = yyleng; printf("%s", yytext); BEGIN ZEROS; }
+<ZEROS>0+		{ ileZer += yyleng; ECHO; }
+<ZEROS>1		{ ileJedyn += 1; ECHO; BEGIN ONES; }
+<ZEROS>.		{ ECHO; BEGIN END; }
+<ONES>1+		{ ileJedyn += yyleng; ECHO; }
+<ONES>\n		{ process(1); BEGIN INITIAL; }
+<ONES>.			{ printf("%s", yytext); BEGIN END; }
+<END>.*$		{ printf("%s", yytext); process(0); BEGIN INITIAL; }
+
 %%
 int yywrap() { return 1; }
 int main() { return yylex(); }
-void push (int num)
-{
-    if (s.top == (MAXSIZE - 1))
-    {
-        return;
-    }
-    else
-    {
-        s.top = s.top + 1;
-        s.stk[s.top] = num;
-    }
-    return;
-}
-int pop ()
-{
-    int num;
-    if (s.top == - 1)
-    {
-        return (s.top);
-    }
-    else
-    {
-        num = s.stk[s.top];
-        s.top = s.top - 1;
-    }
-    return(num);
-}
+int process(int res) {if (res && ileZer == ileJedyn) printf(" OK\n"); else printf(" Error");}
