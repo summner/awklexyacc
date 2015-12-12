@@ -1,10 +1,10 @@
 %{
 	#include <stdio.h>	
-	int liczba;
+	long liczba;
 %}
 %%
-^\ *[0-9]+\ *		{ 
-	sscanf(yytext, "%d", &liczba);
+^\ *[0-9]+\ *$		{ 
+	sscanf(yytext, "%ld", &liczba);
 	if (liczba%5 == 0) printf("%s(+)", yytext); else printf("%s(-)", yytext);
 	}
 %%
