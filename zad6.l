@@ -13,7 +13,6 @@
 	 
 	void push(int);
 	int  pop(void);
-	void display(void);
 %}
 %%
 [0-9]+	{ sscanf(yytext, "%d", &liczba); push(liczba);}
