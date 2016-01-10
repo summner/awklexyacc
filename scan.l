@@ -5,9 +5,8 @@
   #include "y.tab.h"
 %}
 %%
- /* ============= */
-.|\n     { printf("Lexical error: unexpected character in input file\n");
-           return -1;
-         }
+\*  return '*';
+\n  return '\n';
+.   printf("Invalid character (%c) in input file in line: %d",yytext[0],yylineno);
 %%
 int yywrap(void) { return 1; }
